@@ -1,5 +1,7 @@
 import React from 'react';
-import { Todo } from '../types/Todo.types';
+import { Todo, Priority } from '../types/Todo.types';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../i18n';
 import TodoItem from './TodoItem';
 
 interface TodoListProps {
@@ -7,7 +9,7 @@ interface TodoListProps {
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
   onUpdateText: (id: number, newText: string) => void;
-  onUpdatePriority: (id: number, newPriority: string) => void;
+  onUpdatePriority: (id: number, newPriority: Priority) => void;
 }
 
 const TodoList: React.FC<TodoListProps> = ({
@@ -17,8 +19,10 @@ const TodoList: React.FC<TodoListProps> = ({
   onUpdateText,
   onUpdatePriority,
 }) => {
+  const { language } = useLanguage();
+
   if (todos.length === 0) {
-    return <div className="empty-list">暂无待办事项</div>;
+    return <div className="empty-list">{t('emptyList', language)}</div>;
   }
 
   return (

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Todo, Priority } from '../types/Todo.types';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../i18n';
 
 interface TodoItemProps {
   todo: Todo;
@@ -18,16 +20,29 @@ const TodoItem: React.FC<TodoItemProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
+  const { language } = useLanguage();
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+
+    // Format date based on language
+    if (language === 'zh') {
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } else {
+      return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
   };
 
   const handleEditSubmit = () => {
@@ -51,6 +66,14 @@ const TodoItem: React.FC<TodoItemProps> = ({
         return '#27ae60'; // Green for low priority
       default:
         return '#95a5a6';
+    }
+  };
+
+  const getPriorityDisplay = (priority: Priority) => {
+    if (language === 'zh') {
+      return priority === 'high' ? '🔴 高' : priority === 'medium' ? '🟡 中' : '🟢 低';
+    } else {
+      return priority === 'high' ? '🔴 High' : priority === 'medium' ? '🟡 Medium' : '🟢 Low';
     }
   };
 
@@ -85,14 +108,13 @@ const TodoItem: React.FC<TodoItemProps> = ({
       <div className="task-details">
         <div
           className="priority-indicator"
-          title={`优先级: ${todo.priority}`}
+          title={`${t('appHeading', language)}: ${t(`priority${todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1) as 'High' | 'Medium' | 'Low'}`, language)}`}
           style={{
             color: getPriorityColor(todo.priority),
             fontWeight: 'bold',
           }}
         >
-          {todo.priority === 'high' ? '🔴 高' :
-           todo.priority === 'medium' ? '🟡 中' : '🟢 低'}
+          {getPriorityDisplay(todo.priority)}
         </div>
         <div className="created-at">
           {formatDate(todo.createdAt)}
@@ -105,18 +127,18 @@ const TodoItem: React.FC<TodoItemProps> = ({
           className="priority-dropdown"
           style={{ color: getPriorityColor(todo.priority) }}
         >
-          <option value="high">高</option>
-          <option value="medium">中</option>
-          <option value="low">低</option>
+          <option value="high">{t('priorityHigh', language)}</option>
+          <option value="medium">{t('priorityMedium', language)}</option>
+          <option value="low">{t('priorityLow', language)}</option>
         </select>
         <button
           className={`complete-btn ${todo.completed ? 'completed' : ''}`}
           onClick={() => onToggle(todo.id)}
         >
-          {todo.completed ? '撤销' : '完成'}
+          {todo.completed ? t('actionUndo', language) : t('actionComplete', language)}
         </button>
         <button className="delete-btn" onClick={() => onDelete(todo.id)}>
-          删除
+          {t('actionDelete', language)}
         </button>
       </div>
     </li>

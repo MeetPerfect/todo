@@ -1,4 +1,6 @@
 import React from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../i18n';
 
 interface TodoStatsProps {
   total: number;
@@ -7,10 +9,12 @@ interface TodoStatsProps {
 }
 
 const TodoStats: React.FC<TodoStatsProps> = ({ total, active, completed }) => {
+  const { language } = useLanguage();
+
   return (
     <div className="stats">
       <span id="taskStats">
-        总计: {total} | 未完成: {active} | 已完成: {completed}
+        {t('statsTotal', language)}: {total} | {t('statsActive', language)}: {active} | {t('statsCompleted', language)}: {completed}
       </span>
     </div>
   );
