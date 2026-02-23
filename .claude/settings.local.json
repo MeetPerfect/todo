@@ -35,7 +35,12 @@
       "Bash(dir \"D:\\\\py_project\\\\todo\\\\todo-react\\\\src\\\\components\" /s)",
       "Bash(npm create vite@latest . -- --template react-ts)",
       "Bash(npm install -D @vitejs/plugin-react)",
-      "Bash(npx vite --port 3003)"
+      "Bash(npx vite --port 3003)",
+      "Bash(npx vite --port 3006)",
+      "Bash(npx vite --port 3008)",
+      "Bash(npx vite --port 3009)",
+      "Bash(git config --list)",
+      "Bash(git add -A)"
     ]
   }
 }

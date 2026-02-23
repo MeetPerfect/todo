@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Priority } from '../types/Todo.types';
+import { useLanguage } from '../contexts/LanguageContext';
+import { t } from '../i18n';
 
 interface TodoInputProps {
   addTodo: (text: string, priority: Priority) => void;
@@ -8,6 +10,7 @@ interface TodoInputProps {
 const TodoInput: React.FC<TodoInputProps> = ({ addTodo }) => {
   const [inputValue, setInputValue] = useState('');
   const [priority, setPriority] = useState<Priority>('medium');
+  const { language } = useLanguage();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +33,7 @@ const TodoInput: React.FC<TodoInputProps> = ({ addTodo }) => {
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyPress={handleKeyPress}
-        placeholder="输入新的待办事项..."
+        placeholder={t('taskPlaceholder', language)}
         className="task-input"
       />
       <select
@@ -38,12 +41,12 @@ const TodoInput: React.FC<TodoInputProps> = ({ addTodo }) => {
         onChange={(e) => setPriority(e.target.value as Priority)}
         className="priority-select"
       >
-        <option value="high">高</option>
-        <option value="medium">中</option>
-        <option value="low">低</option>
+        <option value="high">{t('priorityHigh', language)}</option>
+        <option value="medium">{t('priorityMedium', language)}</option>
+        <option value="low">{t('priorityLow', language)}</option>
       </select>
       <button type="submit" id="addBtn">
-        添加
+        {t('addButton', language)}
       </button>
     </form>
   );
