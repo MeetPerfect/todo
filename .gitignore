@@ -8,6 +8,10 @@ build/
 
 # Worktrees
 .worktrees/
+.claude/worktrees/
+
+# Local Claude settings
+.claude/settings.local.json
 
 # Environment variables
 .env*
