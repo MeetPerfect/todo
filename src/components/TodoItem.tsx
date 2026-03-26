@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Todo, Priority } from '../types/Todo.types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { t } from '../i18n';
@@ -11,6 +11,15 @@ interface TodoItemProps {
   onUpdatePriority: (id: number, newPriority: Priority) => void;
 }
 
+const getTodayDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = `${now.getMonth() + 1}`.padStart(2, '0');
+  const day = `${now.getDate()}`.padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
+
 const TodoItem: React.FC<TodoItemProps> = ({
   todo,
   onToggle,
@@ -22,10 +31,9 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const [editText, setEditText] = useState(todo.text);
   const { language } = useLanguage();
 
-  const formatDate = (dateString: string) => {
+  const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
 
-    // Format date based on language
     if (language === 'zh') {
       return date.toLocaleString('zh-CN', {
         year: 'numeric',
@@ -34,15 +42,34 @@ const TodoItem: React.FC<TodoItemProps> = ({
         hour: '2-digit',
         minute: '2-digit',
       });
-    } else {
-      return date.toLocaleString('en-US', {
+    }
+
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatDueDate = (dateString: string) => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    const localDate = new Date(year, month - 1, day);
+
+    if (language === 'zh') {
+      return localDate.toLocaleDateString('zh-CN', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
       });
     }
+
+    return localDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
   };
 
   const handleEditSubmit = () => {
@@ -59,26 +86,36 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const getPriorityColor = (priority: Priority) => {
     switch (priority) {
       case 'high':
-        return '#e74c3c'; // Red for high priority
+        return '#e74c3c';
       case 'medium':
-        return '#f39c12'; // Orange for medium priority
+        return '#f39c12';
       case 'low':
-        return '#27ae60'; // Green for low priority
+        return '#27ae60';
       default:
         return '#95a5a6';
     }
   };
 
   const getPriorityDisplay = (priority: Priority) => {
-    if (language === 'zh') {
-      return priority === 'high' ? '🔴 高' : priority === 'medium' ? '🟡 中' : '🟢 低';
-    } else {
-      return priority === 'high' ? '🔴 High' : priority === 'medium' ? '🟡 Medium' : '🟢 Low';
-    }
+    if (priority === 'high') return t('priorityHigh', language);
+    if (priority === 'medium') return t('priorityMedium', language);
+    return t('priorityLow', language);
   };
 
+  const dueDateState = useMemo(() => {
+    if (!todo.dueDate) {
+      return { isToday: false, isOverdue: false };
+    }
+
+    const today = getTodayDateString();
+    return {
+      isToday: !todo.completed && todo.dueDate === today,
+      isOverdue: !todo.completed && todo.dueDate < today,
+    };
+  }, [todo.completed, todo.dueDate]);
+
   return (
-    <li className={todo.completed ? 'completed' : ''}>
+    <li className={`${todo.completed ? 'completed' : ''} ${dueDateState.isOverdue ? 'overdue-item' : ''} ${dueDateState.isToday ? 'today-item' : ''}`}>
       <div className="task-info">
         <input
           type="checkbox"
@@ -108,7 +145,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
       <div className="task-details">
         <div
           className="priority-indicator"
-          title={`${t('appHeading', language)}: ${t(`priority${todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1) as 'High' | 'Medium' | 'Low'}`, language)}`}
+          title={getPriorityDisplay(todo.priority)}
           style={{
             color: getPriorityColor(todo.priority),
             fontWeight: 'bold',
@@ -116,9 +153,20 @@ const TodoItem: React.FC<TodoItemProps> = ({
         >
           {getPriorityDisplay(todo.priority)}
         </div>
-        <div className="created-at">
-          {formatDate(todo.createdAt)}
-        </div>
+        {todo.dueDate && (
+          <div className="due-date-meta">
+            <span className="due-date-text">
+              {t('dueDateDisplay', language)}: {formatDueDate(todo.dueDate)}
+            </span>
+            {dueDateState.isOverdue && (
+              <span className="due-date-status overdue">{t('dueDateOverdue', language)}</span>
+            )}
+            {!dueDateState.isOverdue && dueDateState.isToday && (
+              <span className="due-date-status today">{t('dueDateToday', language)}</span>
+            )}
+          </div>
+        )}
+        <div className="created-at">{formatDateTime(todo.createdAt)}</div>
       </div>
       <div className="task-actions">
         <select

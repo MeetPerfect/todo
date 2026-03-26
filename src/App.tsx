@@ -7,7 +7,6 @@ import TodoList from './components/TodoList';
 import TodoFilters from './components/TodoFilters';
 import TodoStats from './components/TodoStats';
 import LanguageToggle from './components/LanguageToggle';
-import { FilterType } from './types/Todo.types';
 import './App.css';
 
 const AppContent: React.FC = () => {
@@ -16,6 +15,8 @@ const AppContent: React.FC = () => {
     filteredTodos,
     currentFilter,
     setCurrentFilter,
+    searchTerm,
+    setSearchTerm,
     addTodo,
     toggleTodo,
     deleteTodo,
@@ -32,8 +33,23 @@ const AppContent: React.FC = () => {
 
         <TodoInput addTodo={addTodo} />
 
+        <div className="search-section">
+          <label htmlFor="todo-search" className="search-label">
+            {t('searchLabel', language)}
+          </label>
+          <input
+            id="todo-search"
+            type="text"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder={t('searchPlaceholder', language)}
+            className="search-input"
+            aria-label={t('searchLabel', language)}
+          />
+        </div>
+
         <TodoFilters
-          currentFilter={currentFilter as FilterType}
+          currentFilter={currentFilter}
           onFilterChange={setCurrentFilter}
         />
 
@@ -49,6 +65,8 @@ const AppContent: React.FC = () => {
           total={stats.total}
           active={stats.active}
           completed={stats.completed}
+          today={stats.today}
+          overdue={stats.overdue}
         />
       </div>
     </>

@@ -8,32 +8,29 @@ interface TodoFiltersProps {
   onFilterChange: (filter: FilterType) => void;
 }
 
+const filterOptions: Array<{ value: FilterType; labelKey: 'filterAll' | 'filterActive' | 'filterCompleted' | 'filterToday' | 'filterOverdue' }> = [
+  { value: 'all', labelKey: 'filterAll' },
+  { value: 'active', labelKey: 'filterActive' },
+  { value: 'completed', labelKey: 'filterCompleted' },
+  { value: 'today', labelKey: 'filterToday' },
+  { value: 'overdue', labelKey: 'filterOverdue' },
+];
+
 const TodoFilters: React.FC<TodoFiltersProps> = ({ currentFilter, onFilterChange }) => {
   const { language } = useLanguage();
 
   return (
     <div className="filters">
-      <button
-        className={`filter-btn ${currentFilter === 'all' ? 'active' : ''}`}
-        onClick={() => onFilterChange('all')}
-        data-filter="all"
-      >
-        {t('filterAll', language)}
-      </button>
-      <button
-        className={`filter-btn ${currentFilter === 'active' ? 'active' : ''}`}
-        onClick={() => onFilterChange('active')}
-        data-filter="active"
-      >
-        {t('filterActive', language)}
-      </button>
-      <button
-        className={`filter-btn ${currentFilter === 'completed' ? 'active' : ''}`}
-        onClick={() => onFilterChange('completed')}
-        data-filter="completed"
-      >
-        {t('filterCompleted', language)}
-      </button>
+      {filterOptions.map((filter) => (
+        <button
+          key={filter.value}
+          className={`filter-btn ${currentFilter === filter.value ? 'active' : ''}`}
+          onClick={() => onFilterChange(filter.value)}
+          data-filter={filter.value}
+        >
+          {t(filter.labelKey, language)}
+        </button>
+      ))}
     </div>
   );
 };

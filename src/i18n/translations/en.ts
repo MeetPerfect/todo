@@ -5,7 +5,11 @@ export const enTranslations = {
 
   // Input section
   taskPlaceholder: 'Enter a new task...',
+  dueDateLabel: 'Due date',
+  dueDatePlaceholder: 'Select a due date',
   addButton: 'Add',
+  searchLabel: 'Search tasks',
+  searchPlaceholder: 'Search tasks by keyword...',
 
   // Priority options
   priorityHigh: 'High',
@@ -16,6 +20,8 @@ export const enTranslations = {
   filterAll: 'All',
   filterActive: 'Active',
   filterCompleted: 'Completed',
+  filterToday: 'Due Today',
+  filterOverdue: 'Overdue',
 
   // Action buttons
   actionComplete: 'Complete',
@@ -25,11 +31,16 @@ export const enTranslations = {
   // Task statuses
   taskCompleted: 'Completed',
   taskActive: 'Active',
+  dueDateDisplay: 'Due',
+  dueDateToday: 'Due today',
+  dueDateOverdue: 'Overdue',
 
   // Statistics
   statsTotal: 'Total',
   statsActive: 'Active',
   statsCompleted: 'Completed',
+  statsToday: 'Due Today',
+  statsOverdue: 'Overdue',
 
   // Empty state
   emptyList: 'No tasks available',
