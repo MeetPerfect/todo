@@ -8,6 +8,8 @@ export const zhTranslations = {
   dueDateLabel: '截止日期',
   dueDatePlaceholder: '选择截止日期',
   addButton: '添加',
+  searchLabel: '搜索任务',
+  searchPlaceholder: '输入关键词搜索任务...',
 
   // Priority options
   priorityHigh: '高',

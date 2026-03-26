@@ -15,6 +15,8 @@ const AppContent: React.FC = () => {
     filteredTodos,
     currentFilter,
     setCurrentFilter,
+    searchTerm,
+    setSearchTerm,
     addTodo,
     toggleTodo,
     deleteTodo,
@@ -30,6 +32,21 @@ const AppContent: React.FC = () => {
         <h1>{t('appHeading', language)}</h1>
 
         <TodoInput addTodo={addTodo} />
+
+        <div className="search-section">
+          <label htmlFor="todo-search" className="search-label">
+            {t('searchLabel', language)}
+          </label>
+          <input
+            id="todo-search"
+            type="text"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder={t('searchPlaceholder', language)}
+            className="search-input"
+            aria-label={t('searchLabel', language)}
+          />
+        </div>
 
         <TodoFilters
           currentFilter={currentFilter}

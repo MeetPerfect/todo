@@ -8,6 +8,8 @@ export const enTranslations = {
   dueDateLabel: 'Due date',
   dueDatePlaceholder: 'Select a due date',
   addButton: 'Add',
+  searchLabel: 'Search tasks',
+  searchPlaceholder: 'Search tasks by keyword...',
 
   // Priority options
   priorityHigh: 'High',

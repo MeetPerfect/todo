@@ -79,6 +79,7 @@ const useTodos = () => {
   });
 
   const [currentFilter, setCurrentFilter] = useState<FilterType>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
@@ -129,16 +130,30 @@ const useTodos = () => {
     );
   };
 
+  const normalizedSearchTerm = searchTerm.trim().toLocaleLowerCase();
+
   const filteredTodos = useMemo(
     () =>
       todos.filter((todo) => {
-        if (currentFilter === 'active') return !todo.completed;
-        if (currentFilter === 'completed') return todo.completed;
-        if (currentFilter === 'today') return !todo.completed && isDueToday(todo);
-        if (currentFilter === 'overdue') return isOverdue(todo);
-        return true;
+        const matchesFilter = (() => {
+          if (currentFilter === 'active') return !todo.completed;
+          if (currentFilter === 'completed') return todo.completed;
+          if (currentFilter === 'today') return !todo.completed && isDueToday(todo);
+          if (currentFilter === 'overdue') return isOverdue(todo);
+          return true;
+        })();
+
+        if (!matchesFilter) {
+          return false;
+        }
+
+        if (normalizedSearchTerm === '') {
+          return true;
+        }
+
+        return todo.text.toLocaleLowerCase().includes(normalizedSearchTerm);
       }),
-    [currentFilter, todos]
+    [currentFilter, normalizedSearchTerm, todos]
   );
 
   const stats = useMemo(
@@ -157,6 +172,8 @@ const useTodos = () => {
     filteredTodos,
     currentFilter,
     setCurrentFilter,
+    searchTerm,
+    setSearchTerm,
     addTodo,
     toggleTodo,
     deleteTodo,
