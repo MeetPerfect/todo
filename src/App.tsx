@@ -7,7 +7,6 @@ import TodoList from './components/TodoList';
 import TodoFilters from './components/TodoFilters';
 import TodoStats from './components/TodoStats';
 import LanguageToggle from './components/LanguageToggle';
-import { FilterType } from './types/Todo.types';
 import './App.css';
 
 const AppContent: React.FC = () => {
@@ -33,7 +32,7 @@ const AppContent: React.FC = () => {
         <TodoInput addTodo={addTodo} />
 
         <TodoFilters
-          currentFilter={currentFilter as FilterType}
+          currentFilter={currentFilter}
           onFilterChange={setCurrentFilter}
         />
 
@@ -49,6 +48,8 @@ const AppContent: React.FC = () => {
           total={stats.total}
           active={stats.active}
           completed={stats.completed}
+          today={stats.today}
+          overdue={stats.overdue}
         />
       </div>
     </>
